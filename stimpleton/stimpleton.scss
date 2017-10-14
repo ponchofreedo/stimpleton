@@ -1,18 +1,13 @@
-// bower:scss
-// endbower
-
-
-/*  Stimpleton - SCSS
-    v0.0.1
-
+/*  
+    Stimpleton - SCSS / v0.0.1
+    Copyright 2017, Zach Freed
+    Free usage under MIT License
+    http://www.opensource.org/licenses/mit-license.php
 */
-
 
 // imports
 @import url(https://fonts.googleapis.com/css?family=Titillium+Web:200,200i,300,300i,400,400i,600,600i,700,700i,900&amp;subset=latin-ext);
 @import "vendor/_meyer_reset";
-
-
 
 // vars ---------------------------------------
 
@@ -33,7 +28,7 @@ $text-sz-h-large:     3.2rem;
 $text-sz-h-medium:    2.8rem;
 $text-sz-h-small:     2.4rem;
 $text-sz-body:        1.9rem;
-$text-sz-baseline:    1.6rem;
+$text-sz-baseline:    1.6rem !default;
 
 // font-weights
 $text-wt-extralight:  200;
@@ -49,10 +44,34 @@ $margin-base-value:   $text-sz-baseline;
 
 // colors
 $color-primary:       #48525c;
-$color-secondary:     #708090;
+$color-secondary:     #cfd2de;
 $color-black:         #363636;
 $color-white:         #ffffff;
 
+// grid variables 
+$num-cols: 12;
+$grid-formula: 100% / $num-cols;
+$column-list: (
+  one: 1,
+  two: 2,
+  three: 3,
+  four: 4,
+  five: 5,
+  six: 6,
+  seven: 7,
+  eight: 8,
+  nine: 9,
+  ten: 10,
+  eleven: 11,
+  twelve: 12
+);
+$fraction-list: (
+  sixth: 2,
+  quarter: 3,
+  third: 4,
+  half: 6,
+  full: 12
+);
 
 
 // mixins -------------------------------------
@@ -86,7 +105,7 @@ $color-white:         #ffffff;
   }
 }
 
-@mixin clearfix() {
+@mixin clearfix {
   *zoom:1;
   &:before, &:after {
     content: "";
@@ -102,20 +121,7 @@ $color-white:         #ffffff;
   }
 }
 
-
-
 // functions ----------------------------------
-
-@function number-to-word($number){
-  $word: "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve";
-  @return nth($word, $number);
-}
-@function fraction-to-word($fraction){
-  $word: "sixth", "third", "quarter", "half";
-  @return nth($word, $fraction);
-}
-
-
 
 // base ---------------------------------------
 
@@ -141,9 +147,8 @@ body {
   font-family: $primary-font-family;
   font-size: $text-sz-baseline;           // 16px
   line-height: 1.4;
+  color: $color-primary;
 }
-
-
 
 // type ---------------------------------------
 
@@ -199,19 +204,170 @@ p {
   }
 }
 
-
-
 // grid ---------------------------------------
 
 .container {
-  margin: 0 auto;
-  padding: 0 $padding-base-value;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 $padding-base-value * 1;
+  box-sizing: border-box;
 
-  &.max {
+  &.adaptive {
     max-width: $break-super-duper;
   }
 
   &.responsive {
     max-width: 100%;
+  }
+
+  &.no-gutter {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.grid-row {
+  width: 100%;
+  position: relative;
+  @include clearfix;
+}
+
+.grid > [class*="stretch-"] {
+  float: left;
+  padding-left: $padding-base-value * 1;
+  padding-right: $padding-base-value * 1;
+  display: inline-block;
+  
+  ~ [class*="stretch-"] {
+    display: inline-block;
+  }
+
+  &.lefty {
+    margin-left: 0;   // for safety
+    float: left;
+  }
+
+  &.righty {
+    float: right;
+  }
+}
+
+// grid classes - columns
+@each $column, $columns in $column-list  {
+  .stretch-#{$column} {
+    width: ($columns / $num-cols) * 100%;
+  }
+}
+
+// grid classes - fractional
+// a more semantic nomenclature for simpler applications
+@each $fractional, $fraction in $fraction-list  {
+  .stretch-#{$fractional} {
+    width: ($fraction / $num-cols) * 100%;
+  }
+}
+
+// push classes
+@each $column, $columns in $column-list  {
+  .push-#{$column} {
+    margin-left: ($columns / ($num-cols) * 100%);
+  }
+}
+
+// pull classes
+@each $column, $columns in $column-list  {
+  .pull-#{$column} {
+    margin-right: ($columns / ($num-cols) * 100%);
+  }
+}
+
+// pad-left classes
+@each $column, $columns in $column-list  {
+  .pad-l-#{$column} {
+    padding-left: ($columns / ($num-cols) * 100%);
+  }
+}
+
+// pad-right classes
+@each $column, $columns in $column-list  {
+  .pad-r-#{$column} {
+    padding-right: ($columns / ($num-cols) * 100%);
+  }
+}
+
+@include break(medium) {
+  .grid {
+    > [class*="stretch-"],
+      [class*="stretch-"] {
+      width: 100%;
+      padding-left: 0;
+      padding-right: 0;
+    }
+    > [class*="push-"],
+      [class*="push-"] {
+      margin-left: 0;
+    }
+    > [class*="pull-"],
+      [class*="pull-"] {
+      margin-right: 0;
+    }
+    > [class*="pad-l-"],
+      [class*="pad-l-"] {
+      padding-left: 0;
+    }
+    > [class*="pad-r-"],
+      [class*="pad-r-"] {
+      padding-right: 0;
+    }
+    > [class*="stretch-"] {
+      &:first-of-type {
+        padding-right: 0;
+      }
+      &:last-of-type {
+        padding-left: 0;
+      }
+    }
+  }
+  .no-gutter {
+    .grid > [class*="stretch-"] {
+      padding-left: $padding-base-value * 1;
+      padding-right: $padding-base-value * 1;
+    }
+  }
+}
+
+// demo, transfer to another file later
+$stimpleton-color-green: #00D7AF;
+$stimpleton-color-purple: #672894;
+$stimpleton-color-gray: #9BA3AA;
+$stimpleton-color-dark-gray: #48525C;
+$stimpleton-color-light-gray: #CFD2DE;
+$stimpleton-color-black: #404040;
+$stimpleton-color-white: #ffffff;
+$stimpleton-border-radius: 0.4rem;
+
+.demo {
+  
+  & + .demo {
+    margin-top: $margin-base-value * 1;
+  }
+
+  span {
+    display: block;
+    background-color: transparent;
+    text-align: center;
+    border-radius: $stimpleton-border-radius;
+    border: $stimpleton-border-radius solid $stimpleton-color-light-gray;
+    padding-top: $padding-base-value;
+    padding-bottom: $padding-base-value;
+    transition: all 0.16s ease;
+    color: $stimpleton-color-dark-gray;
+
+    &:hover {
+      border-color: $stimpleton-color-green;
+      background-color: $stimpleton-color-green;
+      color: $stimpleton-color-white;
+      font-weight: $text-wt-bold;
+    }
   }
 }
