@@ -1,0 +1,288 @@
+/*  
+    Stimpleton - SCSS / v0.2.0
+    Copyright 2017, Zach Freed
+    Free usage under MIT License
+    http://www.opensource.org/licenses/mit-license.php
+*/
+
+// imports
+@import url(https://fonts.googleapis.com/css?family=Titillium+Web:200,200i,300,300i,400,400i,600,600i,700,700i,900&amp;subset=latin-ext);
+
+@import "_vars";
+@import "_mixins";
+
+@import "/vendor/_meyer_reset";
+
+// base ---------------------------------------
+
+* {
+  box-sizing: border-box;
+}
+
+html, 
+body {
+  height: 100%;
+  height: 100vh;
+  margin: 0;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-size: 62.5%;
+}
+
+body {
+  font-family: $primary-font-family;
+  font-size: $text-sz-baseline;           // 16px
+  line-height: 1.24;
+  color: $color-primary;
+}
+
+// type ---------------------------------------
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  vertical-align: baseline;
+
+  i {
+    font-style: italic;
+  }
+}
+
+h1 {
+  font-size: $text-sz-h-largest;
+  font-weight: $text-wt-bold;
+}
+
+h2 {
+  font-size: $text-sz-h-larger;
+  font-weight: $text-wt-bold;
+}
+
+h3 {
+  font-size: $text-sz-h-large;
+  font-weight: $text-wt-semibold;
+}
+
+h4 {
+  font-size: $text-sz-h-medium;
+}
+
+h5 {
+  font-size: $text-sz-h-small;
+}
+
+h6 {
+  font-size: $text-sz-baseline;
+  font-weight: $text-wt-bold;
+}
+
+p {
+  font-size: $text-sz-body;
+  font-weight: $text-wt-regular;
+  line-height: 1.6;
+  
+  + p {
+    margin-top: $margin-base-value * 2;
+  }
+}
+
+b {
+  font-weight: $text-wt-semibold;
+}
+
+.text-wt- {
+  
+  &extralight {
+    font-weight: $text-wt-extralight;
+  }
+
+  &light {
+    font-weight: $text-wt-light;
+  }
+
+  &regular {
+    font-weight: $text-wt-regular;
+  }
+
+  &semibold {
+    font-weight: $text-wt-semibold;
+  }
+
+  &bold {
+    font-weight: $text-wt-bold;
+  }
+
+  &black {
+    font-weight: $text-wt-black;
+  }
+}
+
+// grid ---------------------------------------
+
+.container {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: $padding-base-value * 1;
+  padding-right: $padding-base-value * 1;
+  box-sizing: border-box;
+
+  &.adaptive {
+    max-width: $break-super-duper;
+  }
+
+  &.responsive {
+    max-width: 100%;
+  }
+
+  .no-gutter,
+  &.no-gutter {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.grid-row {
+  width: 100%;
+  position: relative;
+  @include clearfix;
+}
+
+.clearfix,
+.nested {
+  @include clearfix;
+}
+
+[class*="#{$grid-col-name-prefix}-"] {
+  float: left;
+  padding-left: $padding-base-value * 1;
+  padding-right: $padding-base-value * 1;
+  display: inline-block;
+  
+  ~ [class*="#{$grid-col-name-prefix}-"] {
+    display: inline-block;
+  }
+
+  &.lefty {
+    margin-left: 0;   // for safety
+    float: left;
+  }
+
+  &.righty {
+    float: right;
+  }
+
+  @include break(small) {
+
+    &.switch-lefty {
+      float: left;
+    }
+
+    &.switch-righty {
+      float: right;
+      clear: right;
+    }
+  }
+}
+
+// grid classes - columns
+@each $column, $columns in $column-list  {
+  .#{$grid-col-name-prefix}-#{$column} {
+    width: ($columns / $num-cols) * 100%;
+  }
+}
+
+// grid classes - fractional
+// a more semantic nomenclature for simpler applications
+@each $fractional, $fraction in $fraction-list  {
+  .#{$grid-col-name-prefix}-#{$fractional} {
+    width: ($fraction / $num-cols) * 100%;
+  }
+}
+
+// offset classes
+@each $column, $columns in $column-list  {
+  .offset-#{$column} {
+    margin-left: ($columns / ($num-cols) * 100%);
+  }
+}
+
+// pad-left classes
+@each $column, $columns in $column-list  {
+  .pad-l-#{$column} {
+    padding-left: ($columns / ($num-cols) * 100%);
+  }
+  @if $column = ("one", "two") {
+    @include break(medium) {
+      .pad-l-#{$column} {
+        padding-left: 0;
+      }
+    }
+  }
+
+}
+
+// pad-right classes
+@each $column, $columns in $column-list  {
+  .pad-r-#{$column} {
+    padding-right: ($columns / ($num-cols) * 100%);
+  }
+  @if $column = ("one", "two") {
+    @include break(medium) {
+      .pad-r-#{$column} {
+        padding-right: 0;
+      }
+    }
+  }
+}
+@include break(small) {
+  [class*="#{$grid-col-name-prefix}-"] {
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+
+    &:first-of-type {
+      padding-right: 0;
+    }
+    
+    &:last-of-type {
+      padding-left: 0;
+    }
+  }
+
+  [class*="offset-"] {
+    margin-left: 0;
+  }
+
+  [class*="pad-l-"] {
+    padding-left: 0;
+  }
+
+  [class*="pad-r-"] {
+    padding-right: 0;
+  }
+
+  .no-gutter,
+  .no-gutter [class*="#{$grid-col-name-prefix}-"] {
+    padding-left: $padding-base-value * 1;
+    padding-right: $padding-base-value * 1;
+  }
+
+  .nested {
+    > [class*="#{$grid-col-name-prefix}-"] { 
+      padding-left: $padding-base-value * 1;
+      padding-right: $padding-base-value * 1;
+    }
+    .no-pad {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+}
