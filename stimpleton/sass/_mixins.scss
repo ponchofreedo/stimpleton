@@ -1,0 +1,50 @@
+// bower:scss
+// endbower
+
+
+// mixins -------------------------------------
+
+// currently there seems to be a bug, mostly with webkit
+// browsers, with using rem units in media queries, so
+// these will use flat pixel values until I arrive at a
+// resonable solution.
+
+@mixin break($breakpoint) {
+  @if $breakpoint == small {
+    @media only screen and (max-width: 480px) { @content; }
+  }
+  @else if $breakpoint == medium {
+    @media only screen and (max-width: 768px) { @content; }
+  }
+  @else if $breakpoint == large {
+    @media only screen and (max-width: 960px) { @content; }
+  }
+  @else if $breakpoint == super {
+    @media only screen and (max-width: 1280px) { @content; }
+  }
+  @else if $breakpoint == super-duper {
+    @media only screen and (max-width: 1440px) { @content; }
+  }
+  @else if $breakpoint == mega {
+    @media only screen and (min-width: 1441px) { @content; }
+  }
+  @else {
+    @media only screen and ('#{$breakpoint}') { @content; }
+  }
+}
+
+@mixin clearfix {
+  *zoom:1;
+  &:before, &:after {
+    content: "";
+    display: table;
+  }
+  &:after {
+    clear: both;
+  }
+  @include break(break-small) {
+    &:last-child {
+      float: none;
+    }
+  }
+}

@@ -1,0 +1,70 @@
+// bower:scss
+// endbower
+
+
+// vars ---------------------------------------
+
+// mq stuff
+$break-small:         48rem;
+$break-medium:        76.8rem;
+$break-large:         96rem;
+$break-super:         128rem;
+$break-super-duper:   144rem;
+
+// font family
+$primary-font-family: 'Titillium Web', Helvetica, sans-serif;
+//$primary-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+
+// font-sizing
+$text-sz-h-largest:   6.2rem;
+$text-sz-h-larger:    4.8rem;
+$text-sz-h-large:     3.2rem;
+$text-sz-h-medium:    2.8rem;
+$text-sz-h-small:     2.4rem;
+$text-sz-body:        1.9rem;
+$text-sz-baseline:    1.6rem !default;
+
+// font-weights
+$text-wt-extralight:  200;
+$text-wt-light:       300;
+$text-wt-regular:     400;
+$text-wt-semibold:    600;
+$text-wt-bold:        700;
+$text-wt-black:       900;
+
+// padding / margin helpers
+$padding-base-value:  $text-sz-baseline;
+$margin-base-value:   $text-sz-baseline;
+
+// colors
+$color-primary:       #48525c;
+$color-secondary:     #cfd2de;
+$color-black:         #363636;
+$color-white:         #ffffff;
+
+// grid variables 
+$num-cols: 12;
+$grid-formula: 100% / $num-cols;
+$column-list: (
+  one: 1,
+  two: 2,
+  three: 3,
+  four: 4,
+  five: 5,
+  six: 6,
+  seven: 7,
+  eight: 8,
+  nine: 9,
+  ten: 10,
+  eleven: 11,
+  twelve: 12
+);
+$fraction-list: (
+  twelfth: 1,
+  sixth: 2,
+  quarter: 3,
+  third: 4,
+  half: 6,
+  full: 12
+);
+$grid-col-name-prefix: stretch;
