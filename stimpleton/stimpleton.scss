@@ -1,5 +1,5 @@
 /*  
-    Stimpleton - SCSS / v0.0.1
+    Stimpleton - SCSS / v0.2.0
     Copyright 2017, Zach Freed
     Free usage under MIT License
     http://www.opensource.org/licenses/mit-license.php
@@ -20,6 +20,7 @@ $break-super-duper:   144rem;
 
 // font family
 $primary-font-family: 'Titillium Web', Helvetica, sans-serif;
+//$primary-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 
 // font-sizing
 $text-sz-h-largest:   6.2rem;
@@ -66,12 +67,14 @@ $column-list: (
   twelve: 12
 );
 $fraction-list: (
+  twelfth: 1,
   sixth: 2,
   quarter: 3,
   third: 4,
   half: 6,
   full: 12
 );
+$grid-col-name-prefix: stretch;
 
 
 // mixins -------------------------------------
@@ -121,8 +124,6 @@ $fraction-list: (
   }
 }
 
-// functions ----------------------------------
-
 // base ---------------------------------------
 
 * {
@@ -146,7 +147,7 @@ html {
 body {
   font-family: $primary-font-family;
   font-size: $text-sz-baseline;           // 16px
-  line-height: 1.4;
+  line-height: 1.24;
   color: $color-primary;
 }
 
@@ -173,7 +174,7 @@ h1 {
 
 h2 {
   font-size: $text-sz-h-larger;
-  font-weight: $text-wt-semibold;
+  font-weight: $text-wt-bold;
 }
 
 h3 {
@@ -200,7 +201,38 @@ p {
   line-height: 1.6;
   
   + p {
-    margin-top: 0.8rem;
+    margin-top: $margin-base-value * 2;
+  }
+}
+
+b {
+  font-weight: $text-wt-semibold;
+}
+
+.text-wt- {
+  
+  &extralight {
+    font-weight: $text-wt-extralight;
+  }
+
+  &light {
+    font-weight: $text-wt-light;
+  }
+
+  &regular {
+    font-weight: $text-wt-regular;
+  }
+
+  &semibold {
+    font-weight: $text-wt-semibold;
+  }
+
+  &bold {
+    font-weight: $text-wt-bold;
+  }
+
+  &black {
+    font-weight: $text-wt-black;
   }
 }
 
@@ -209,7 +241,8 @@ p {
 .container {
   margin-left: auto;
   margin-right: auto;
-  padding: 0 $padding-base-value * 1;
+  padding-left: $padding-base-value * 1;
+  padding-right: $padding-base-value * 1;
   box-sizing: border-box;
 
   &.adaptive {
@@ -220,6 +253,7 @@ p {
     max-width: 100%;
   }
 
+  .no-gutter,
   &.no-gutter {
     padding-left: 0;
     padding-right: 0;
@@ -232,13 +266,18 @@ p {
   @include clearfix;
 }
 
-.grid > [class*="stretch-"] {
+.clearfix,
+.nested {
+  @include clearfix;
+}
+
+[class*="#{$grid-col-name-prefix}-"] {
   float: left;
   padding-left: $padding-base-value * 1;
   padding-right: $padding-base-value * 1;
   display: inline-block;
   
-  ~ [class*="stretch-"] {
+  ~ [class*="#{$grid-col-name-prefix}-"] {
     display: inline-block;
   }
 
@@ -250,11 +289,23 @@ p {
   &.righty {
     float: right;
   }
+
+  @include break(small) {
+
+    &.switch-lefty {
+      float: left;
+    }
+
+    &.switch-righty {
+      float: right;
+      clear: right;
+    }
+  }
 }
 
 // grid classes - columns
 @each $column, $columns in $column-list  {
-  .stretch-#{$column} {
+  .#{$grid-col-name-prefix}-#{$column} {
     width: ($columns / $num-cols) * 100%;
   }
 }
@@ -262,22 +313,15 @@ p {
 // grid classes - fractional
 // a more semantic nomenclature for simpler applications
 @each $fractional, $fraction in $fraction-list  {
-  .stretch-#{$fractional} {
+  .#{$grid-col-name-prefix}-#{$fractional} {
     width: ($fraction / $num-cols) * 100%;
   }
 }
 
-// push classes
+// offset classes
 @each $column, $columns in $column-list  {
-  .push-#{$column} {
+  .offset-#{$column} {
     margin-left: ($columns / ($num-cols) * 100%);
-  }
-}
-
-// pull classes
-@each $column, $columns in $column-list  {
-  .pull-#{$column} {
-    margin-right: ($columns / ($num-cols) * 100%);
   }
 }
 
@@ -286,6 +330,14 @@ p {
   .pad-l-#{$column} {
     padding-left: ($columns / ($num-cols) * 100%);
   }
+  @if $column = ("one", "two") {
+    @include break(medium) {
+      .pad-l-#{$column} {
+        padding-left: 0;
+      }
+    }
+  }
+
 }
 
 // pad-right classes
@@ -293,81 +345,55 @@ p {
   .pad-r-#{$column} {
     padding-right: ($columns / ($num-cols) * 100%);
   }
-}
-
-@include break(medium) {
-  .grid {
-    > [class*="stretch-"],
-      [class*="stretch-"] {
-      width: 100%;
-      padding-left: 0;
-      padding-right: 0;
-    }
-    > [class*="push-"],
-      [class*="push-"] {
-      margin-left: 0;
-    }
-    > [class*="pull-"],
-      [class*="pull-"] {
-      margin-right: 0;
-    }
-    > [class*="pad-l-"],
-      [class*="pad-l-"] {
-      padding-left: 0;
-    }
-    > [class*="pad-r-"],
-      [class*="pad-r-"] {
-      padding-right: 0;
-    }
-    > [class*="stretch-"] {
-      &:first-of-type {
+  @if $column = ("one", "two") {
+    @include break(medium) {
+      .pad-r-#{$column} {
         padding-right: 0;
-      }
-      &:last-of-type {
-        padding-left: 0;
       }
     }
   }
-  .no-gutter {
-    .grid > [class*="stretch-"] {
+}
+@include break(small) {
+  [class*="#{$grid-col-name-prefix}-"] {
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+
+    &:first-of-type {
+      padding-right: 0;
+    }
+    
+    &:last-of-type {
+      padding-left: 0;
+    }
+  }
+
+  [class*="offset-"] {
+    margin-left: 0;
+  }
+
+  [class*="pad-l-"] {
+    padding-left: 0;
+  }
+
+  [class*="pad-r-"] {
+    padding-right: 0;
+  }
+
+  .no-gutter,
+  .no-gutter [class*="#{$grid-col-name-prefix}-"] {
+    padding-left: $padding-base-value * 1;
+    padding-right: $padding-base-value * 1;
+  }
+
+  .nested {
+    > [class*="#{$grid-col-name-prefix}-"] { 
       padding-left: $padding-base-value * 1;
       padding-right: $padding-base-value * 1;
     }
-  }
-}
-
-// demo, transfer to another file later
-$stimpleton-color-green: #00D7AF;
-$stimpleton-color-purple: #672894;
-$stimpleton-color-gray: #9BA3AA;
-$stimpleton-color-dark-gray: #48525C;
-$stimpleton-color-light-gray: #CFD2DE;
-$stimpleton-color-black: #404040;
-$stimpleton-color-white: #ffffff;
-$stimpleton-border-radius: 0.4rem;
-
-.demo {
-  
-  & + .demo {
-    margin-top: $margin-base-value * 1;
-  }
-
-  span {
-    display: block;
-    background-color: transparent;
-    text-align: center;
-    border-radius: $stimpleton-border-radius;
-    border: $stimpleton-border-radius solid $stimpleton-color-light-gray;
-    padding-top: $padding-base-value;
-    padding-bottom: $padding-base-value;
-    transition: all 0.16s ease;
-    color: $stimpleton-color-dark-gray;
-
-    &:hover {
-      border-color: $stimpleton-color-green;
-      background-color: $stimpleton-color-green;
-      color: $stimpleton-color-white;
-      font-weight: $text-wt-bold;
+    .no-pad {
+      padding-left: 0;
+      padding-right: 0;
     }
   }
 }
